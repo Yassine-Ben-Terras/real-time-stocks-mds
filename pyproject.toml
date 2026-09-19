@@ -1,0 +1,28 @@
+[project]
+name = "real-time-stocks-mds"
+version = "2.0.0"
+description = "Real-time stock market pipeline on the modern data stack"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["dbt_stocks/target", "dbt_stocks/dbt_packages", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "C4", "SIM", "ARG", "PTH", "RUF"]
+ignore = ["E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ARG001", "SLF001"]
+"airflow/dags/*" = ["E402"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra --strict-markers"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["producer"]
+omit = ["*/__init__.py"]
