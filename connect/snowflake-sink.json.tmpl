@@ -1,0 +1,32 @@
+{
+  "name": "snowflake-stock-trades-sink",
+  "config": {
+    "connector.class": "com.snowflake.kafka.connector.SnowflakeSinkConnector",
+    "tasks.max": "2",
+    "topics": "stock.trades.v1",
+
+    "snowflake.ingestion.method": "SNOWPIPE_STREAMING",
+    "snowflake.url.name": "${SNOWFLAKE_ACCOUNT}.snowflakecomputing.com:443",
+    "snowflake.user.name": "${SNOWFLAKE_USER}",
+    "snowflake.private.key": "${SNOWFLAKE_PRIVATE_KEY}",
+    "snowflake.private.key.passphrase": "${SNOWFLAKE_PRIVATE_KEY_PASSPHRASE}",
+    "snowflake.role.name": "${SNOWFLAKE_ROLE}",
+    "snowflake.database.name": "${SNOWFLAKE_DATABASE}",
+    "snowflake.schema.name": "RAW",
+    "snowflake.topic2table.map": "stock.trades.v1:STOCK_TRADES_RAW",
+
+    "snowflake.enable.schematization": "false",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "com.snowflake.kafka.connector.records.SnowflakeJsonConverter",
+
+    "buffer.flush.time": "10",
+    "buffer.count.records": "10000",
+    "buffer.size.bytes": "5000000",
+
+    "errors.tolerance": "all",
+    "errors.log.enable": "true",
+    "errors.deadletterqueue.topic.name": "stock.trades.v1.dlq",
+    "errors.deadletterqueue.topic.replication.factor": "1",
+    "errors.deadletterqueue.context.headers.enable": "true"
+  }
+}
