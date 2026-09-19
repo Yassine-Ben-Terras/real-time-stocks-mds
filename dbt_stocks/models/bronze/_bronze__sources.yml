@@ -1,0 +1,24 @@
+version: 2
+
+sources:
+  - name: raw
+    database: "{{ env_var('SNOWFLAKE_DATABASE', 'STOCKS_MDS') }}"
+    schema: RAW
+    description: >
+      Landing zone written directly by the Snowflake Kafka Connector using
+      Snowpipe Streaming. Nothing in this project writes here; the table and
+      its two VARIANT columns are created and owned by the connector.
+    tables:
+      - name: stock_trades_raw
+        description: One row per Kafka record from topic `stock.trades.v1`.
+        loaded_at_field: "TO_TIMESTAMP_NTZ(record_metadata:CreateTime::number, 3)"
+        freshness:
+          warn_after: {count: 5, period: minute}
+          error_after: {count: 30, period: minute}
+        columns:
+          - name: record_content
+            description: The canonical trade event produced by the producer service.
+            tests: [not_null]
+          - name: record_metadata
+            description: Connector-supplied topic, partition, offset and CreateTime.
+            tests: [not_null]

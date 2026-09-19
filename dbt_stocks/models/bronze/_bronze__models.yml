@@ -1,0 +1,23 @@
+version: 2
+
+models:
+  - name: bronze_stock_trades
+    description: Typed projection of the Kafka landing table. No filtering, no dedup.
+    columns:
+      - name: symbol
+        description: Ticker symbol, uppercase.
+        tests: [not_null]
+      - name: price
+        description: Trade price in the instrument's quote currency.
+        tests: [not_null]
+      - name: trade_ts_ms
+        description: Exchange timestamp as epoch milliseconds (authoritative).
+        tests: [not_null]
+      - name: trade_ts
+        description: The same instant as a UTC timestamp, parsed from ISO-8601.
+        tests: [not_null]
+      - name: kafka_offset
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [kafka_topic, kafka_partition, kafka_offset]
