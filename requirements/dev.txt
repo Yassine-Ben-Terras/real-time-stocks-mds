@@ -1,7 +1,7 @@
 -r producer.txt
 -r dbt.txt
 
-pytest==8.3.3
+pytest==9.1.1
 pytest-cov==5.0.0
 ruff==0.6.9
 sqlfluff==3.2.0
