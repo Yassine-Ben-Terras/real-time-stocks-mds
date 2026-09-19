@@ -91,7 +91,7 @@ jobs:
         run: dbt docs generate --profiles-dir . --target prod --static
 
       # The manifest is what makes Slim CI possible on the next pull request.
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: prod-manifest
           path: dbt_stocks/target/manifest.json
