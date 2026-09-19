@@ -1,0 +1,8 @@
+snowflake_account    = "xy12345.eu-west-1"
+snowflake_admin_user = "YOUR_ADMIN_USER"
+environment          = "dev"
+warehouse_size       = "XSMALL"
+auto_suspend_seconds = 60
+
+# Output of: ./scripts/generate_snowflake_keypair.sh
+streaming_public_key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A..."
