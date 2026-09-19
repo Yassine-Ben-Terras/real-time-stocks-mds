@@ -1,0 +1,41 @@
+# Credentials come from the environment only. This file is safe to commit.
+dbt_stocks:
+  target: "{{ env_var('DBT_TARGET', 'dev') }}"
+  outputs:
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'STOCKS_TRANSFORMER') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'STOCKS_MDS_DEV') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'STOCKS_WH') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'DEV') }}"
+      threads: 4
+      client_session_keep_alive: false
+
+    ci:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'STOCKS_TRANSFORMER') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'STOCKS_MDS_CI') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'STOCKS_WH') }}"
+      # One throwaway schema per pull request.
+      schema: "{{ env_var('DBT_SCHEMA', 'CI_UNKNOWN') }}"
+      threads: 8
+
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      private_key: "{{ env_var('SNOWFLAKE_PRIVATE_KEY') }}"
+      private_key_passphrase: "{{ env_var('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE', '') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'STOCKS_TRANSFORMER') }}"
+      database: "{{ env_var('SNOWFLAKE_DATABASE', 'STOCKS_MDS') }}"
+      warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'STOCKS_WH') }}"
+      schema: "{{ env_var('DBT_SCHEMA', 'ANALYTICS') }}"
+      threads: 8

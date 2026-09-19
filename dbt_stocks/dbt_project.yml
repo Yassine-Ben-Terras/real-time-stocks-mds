@@ -1,0 +1,44 @@
+name: dbt_stocks
+version: "2.0.0"
+config-version: 2
+
+profile: dbt_stocks
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # Anything older than this is out of scope for the live dashboards.
+  trade_lookback_days: 7
+  # Default freshness expectation for the streaming source, in minutes.
+  source_max_lag_minutes: 5
+
+models:
+  dbt_stocks:
+    +persist_docs:
+      relation: true
+      columns: true
+    bronze:
+      +schema: bronze
+      +materialized: view
+    silver:
+      +schema: silver
+      +materialized: dynamic_table
+      +snowflake_warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'STOCKS_WH') }}"
+      +target_lag: "1 minute"
+      +on_configuration_change: apply
+    gold:
+      +schema: gold
+      +materialized: dynamic_table
+      +snowflake_warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE', 'STOCKS_WH') }}"
+      +target_lag: "1 minute"
+      +on_configuration_change: apply
+
+tests:
+  dbt_stocks:
+    +store_failures: true
+    +schema: dbt_test_failures
