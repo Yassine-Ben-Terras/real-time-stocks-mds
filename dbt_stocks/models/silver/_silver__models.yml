@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: silver_stock_trades
+    description: >
+      Cleaned and deduplicated trade events, one row per distinct
+      (symbol, trade_ts_ms, price, volume). This is the model everything
+      downstream should build on.
+    columns:
+      - name: symbol
+        tests:
+          - not_null
+          - relationships:
+              to: ref('bronze_stock_trades')
+              field: symbol
+      - name: price
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: false
+      - name: volume
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+      - name: trade_ts
+        tests: [not_null]
+      - name: trade_minute
+        description: Trade timestamp truncated to the minute, the OHLC grain.
+        tests: [not_null]
+      - name: ingest_latency_ms
+        description: Exchange timestamp to warehouse arrival, in milliseconds.
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [symbol, trade_ts_ms, price, volume]
