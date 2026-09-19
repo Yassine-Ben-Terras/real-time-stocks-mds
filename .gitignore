@@ -1,0 +1,42 @@
+# secrets -- nothing here ever gets committed
+.env
+.env.*
+!.env.example
+.secrets/
+*.p8
+*.pem
+*.key
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+
+# dbt
+dbt_stocks/target/
+dbt_stocks/dbt_packages/
+dbt_stocks/logs/
+
+# airflow
+airflow/logs/
+airflow/plugins/__pycache__/
+airflow.db
+
+# terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# os / editor
+.DS_Store
+.idea/
+.vscode/
