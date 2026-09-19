@@ -1,0 +1,34 @@
+{
+  "name": "minio-stock-trades-archive",
+  "config": {
+    "connector.class": "io.confluent.connect.s3.S3SinkConnector",
+    "tasks.max": "1",
+    "topics": "stock.trades.v1",
+
+    "s3.bucket.name": "${MINIO_BUCKET}",
+    "store.url": "http://minio:9000",
+    "s3.region": "us-east-1",
+    "aws.access.key.id": "${MINIO_ROOT_USER}",
+    "aws.secret.access.key": "${MINIO_ROOT_PASSWORD}",
+
+    "storage.class": "io.confluent.connect.s3.storage.S3Storage",
+    "format.class": "io.confluent.connect.s3.format.parquet.ParquetFormat",
+    "parquet.codec": "snappy",
+
+    "partitioner.class": "io.confluent.connect.storage.partitioner.TimeBasedPartitioner",
+    "path.format": "'symbol_date'=YYYY-MM-dd/'hour'=HH",
+    "partition.duration.ms": "3600000",
+    "timestamp.extractor": "RecordField",
+    "timestamp.field": "trade_ts_ms",
+    "locale": "en-US",
+    "timezone": "UTC",
+
+    "flush.size": "5000",
+    "rotate.schedule.interval.ms": "300000",
+
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "schema.compatibility": "NONE"
+  }
+}
