@@ -1,4 +1,4 @@
-FROM confluentinc/cp-kafka-connect:7.6.1
+FROM confluentinc/cp-kafka-connect:8.3.2
 
 # Snowflake sink (Snowpipe Streaming) + S3 sink pointed at MinIO for the
 # archive/replay zone. Pinned versions so builds are reproducible.
