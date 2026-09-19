@@ -1,0 +1,50 @@
+version: 2
+
+models:
+  - name: gold_ohlc_1m
+    description: One-minute OHLC candles derived from real trades. Feeds the candlestick chart.
+    columns:
+      - name: symbol
+        tests: [not_null]
+      - name: candle_ts
+        tests: [not_null]
+      - name: open_price
+        tests: [not_null]
+      - name: high_price
+        tests: [not_null]
+      - name: low_price
+        tests: [not_null]
+      - name: close_price
+        tests: [not_null]
+      - name: trade_count
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              inclusive: true
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [symbol, candle_ts]
+
+  - name: gold_latest_quote
+    description: Current price per symbol with change against the previous close. Feeds the KPI cards.
+    columns:
+      - name: symbol
+        tests: [not_null, unique]
+      - name: current_price
+        tests: [not_null]
+      - name: staleness_seconds
+        description: Seconds since this symbol last traded. A freshness signal for the dashboard.
+
+  - name: gold_symbol_volatility
+    description: Dispersion per symbol over the lookback window. Feeds the treemap.
+    columns:
+      - name: symbol
+        tests: [not_null, unique]
+      - name: relative_volatility
+        description: Coefficient of variation, comparable across symbols of different price levels.
+
+  - name: gold_pipeline_health
+    description: Per-symbol ingestion latency and volume over the last hour. Feeds the ops page.
+    columns:
+      - name: symbol
+        tests: [not_null, unique]
