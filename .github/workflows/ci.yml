@@ -126,7 +126,7 @@ jobs:
       - name: Download production manifest for state comparison
         if: steps.guard.outputs.has_creds == 'true'
         continue-on-error: true
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: prod-manifest
           path: prod-artifacts
